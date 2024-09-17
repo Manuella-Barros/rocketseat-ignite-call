@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/router'
 import { api } from '@/pages/api/axios'
-import { router } from 'next/client'
 import { toast } from 'sonner'
 
 const registerFormSchema = z.object({
