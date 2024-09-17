@@ -42,7 +42,7 @@ function Register() {
     try {
       const response = await api.post('/users', data)
 
-      await router.push('/register/connect-calendar')
+      await route.push('/register/connect-calendar')
 
       console.log(response)
     } catch (e) {
