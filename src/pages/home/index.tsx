@@ -3,7 +3,6 @@ import { Heading, Text } from '@ignite-ui/react'
 import appPreview from '../../assets/appPreview.png'
 import Image from 'next/image'
 import ClaimUsernameForm from '@/pages/home/components/claimUserame/ClaimUsernameForm'
-import {useRouter} from "next/router";
 
 export default function Home() {
   return (

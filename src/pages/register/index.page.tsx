@@ -37,7 +37,7 @@ function Register() {
     if (route.query) {
       setValue('username', String(route.query.username))
     }
-  }, [route.query.username])
+  }, [setValue, route.query.username])
 
   async function handleRegister(data: RegisterFormData) {
     try {
