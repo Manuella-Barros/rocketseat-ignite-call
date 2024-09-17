@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/router'
 import { api } from '@/pages/api/axios'
 import { router } from 'next/client'
+import { toast } from 'sonner'
 
 const registerFormSchema = z.object({
   username: z
@@ -46,6 +47,8 @@ function Register() {
 
       console.log(response)
     } catch (e) {
+      toast.error('Usuário já existe')
+
       console.log(e)
     }
   }

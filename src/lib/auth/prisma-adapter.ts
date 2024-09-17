@@ -1,13 +1,12 @@
 import { Adapter } from 'next-auth/adapters'
 import { prisma } from '@/lib/prisma'
-import { mockSession } from 'next-auth/client/__tests__/helpers/mocks'
-import user = mockSession.user
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 import { destroyCookie, parseCookies } from 'nookies'
 // requisicao para poder pegar os cookies
+
 export default function PrismaAdapter(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
 ): Adapter {
   return {
     async createUser(user) {
@@ -41,7 +40,9 @@ export default function PrismaAdapter(
     },
 
     async getUser(id) {
-      const user = await prisma.user.findUniqueOrThrow({ where: { id } })
+      const user = await prisma.user.findUnique({ where: { id } })
+
+      if (!user) return null
 
       return {
         id: user.id,
@@ -54,7 +55,9 @@ export default function PrismaAdapter(
     },
 
     async getUserByEmail(email) {
-      const user = await prisma.user.findUniqueOrThrow({ where: { email } })
+      const user = await prisma.user.findUnique({ where: { email } })
+
+      if (!user) return null
 
       return {
         id: user.id,
@@ -67,7 +70,7 @@ export default function PrismaAdapter(
     },
 
     async getUserByAccount({ providerAccountId, provider }) {
-      const account = await prisma.account.findUniqueOrThrow({
+      const account = await prisma.account.findUnique({
         where: {
           provider_provider_account_id: {
             provider,
@@ -77,13 +80,15 @@ export default function PrismaAdapter(
         include: { user: true },
       })
 
+      if (!account) return null
+
       return {
-        id: account.user_id,
+        id: account.user.id,
         username: account.user.username,
         emailVerified: null,
         email: account.user.email!,
         avatar_url: account.user.avatar_url!,
-        name: user.name,
+        name: account.user.name,
       }
     },
 
@@ -145,7 +150,7 @@ export default function PrismaAdapter(
     },
 
     async getSessionAndUser(sessionToken) {
-      const { user, ...session } = await prisma.session.findUniqueOrThrow({
+      const prismaSession = await prisma.session.findUnique({
         where: {
           session_token: sessionToken,
         },
@@ -153,6 +158,10 @@ export default function PrismaAdapter(
           user: true,
         },
       })
+
+      if (!prismaSession) return null
+
+      const { user, ...session } = prismaSession
 
       return {
         session: {

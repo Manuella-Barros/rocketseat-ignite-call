@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Header } from '@/pages/register/style'
 import { Button, Heading, MultiStep, Text } from '@ignite-ui/react'
-import { ArrowRight } from 'phosphor-react'
+import { ArrowRight, CheckCircle } from 'phosphor-react'
 import {
   ConnectBox,
   ConnectItem,
@@ -14,6 +14,7 @@ function Register() {
   const { query } = useRouter()
   const hasAuthError = !!query.error
   const isSignIn = status === 'authenticated'
+  const router = useRouter()
 
   return (
     <Container>
@@ -33,16 +34,31 @@ function Register() {
             disabled={!!data?.user?.email}
             variant={'secondary'}
             size={'sm'}
-            onClick={() => signIn('google')}
+            onClick={() => {
+              signIn('google')
+            }}
           >
-            Conectar
-            <ArrowRight />
+            {isSignIn ? (
+              <>
+                Conectado
+                <CheckCircle />
+              </>
+            ) : (
+              <>
+                Conectar
+                <ArrowRight />
+              </>
+            )}
           </Button>
         </ConnectItem>
 
         {hasAuthError && <Text>Falha ao conectar ao goole</Text>}
 
-        <Button type={'submit'} disabled={!isSignIn}>
+        <Button
+          type={'submit'}
+          disabled={!isSignIn}
+          onClick={() => router.push('/register/time-intervals/')}
+        >
           Próximo passo
           <ArrowRight />
         </Button>

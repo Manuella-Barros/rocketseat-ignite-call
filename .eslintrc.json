@@ -2,5 +2,8 @@
   "extends": [
     "next/core-web-vitals",
     "@rocketseat/eslint-config/node"
-  ]
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  }
 }
